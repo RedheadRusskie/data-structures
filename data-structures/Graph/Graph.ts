@@ -1,8 +1,10 @@
 class Vertex {
   label: string;
+  visited: boolean;
 
   constructor(label: string) {
     this.label = label;
+    this.visited = false;
   }
 
   public toString() {
@@ -47,6 +49,29 @@ class Graph {
       }
     }
   }
+
+  public depthFirstSearch(vertex: Vertex, targetLabel: string) {
+    const vertexIndex = this.vertices.indexOf(vertex);
+
+    if (vertexIndex !== -1) {
+      const currentVertex = this.vertices[vertexIndex];
+      currentVertex.visited = true;
+
+      if (vertex.label === targetLabel) {
+        console.log(`${vertex.label} found.`);
+        return true;
+      }
+
+      for (const adjacentVertex of this.adjacent[vertexIndex]) {
+        if (
+          !adjacentVertex.visited &&
+          this.depthFirstSearch(adjacentVertex, targetLabel)
+        ) {
+          return true;
+        } else return false;
+      }
+    }
+  }
 }
 
 const vertexA = new Vertex("A");
@@ -58,4 +83,4 @@ graph.addEdge(vertexA, vertexB);
 graph.addEdge(vertexB, vertexC);
 graph.addEdge(vertexC, vertexD);
 graph.addEdge(vertexA, vertexC);
-graph.showGraph();
+console.log(graph.depthFirstSearch(vertexC, "C"));
