@@ -1,3 +1,5 @@
+import { Queue } from "../Queue/Queue";
+
 class Vertex {
   label: string;
   visited: boolean;
@@ -72,15 +74,38 @@ class Graph {
       }
     }
   }
-}
 
-const vertexA = new Vertex("A");
-const vertexB = new Vertex("B");
-const vertexC = new Vertex("C");
-const vertexD = new Vertex("D");
-const graph = new Graph([vertexA, vertexB, vertexC, vertexD]);
-graph.addEdge(vertexA, vertexB);
-graph.addEdge(vertexB, vertexC);
-graph.addEdge(vertexC, vertexD);
-graph.addEdge(vertexA, vertexC);
-console.log(graph.depthFirstSearch(vertexC, "C"));
+  public breadthFirstSearch(startingVertex: Vertex, targetLabel: string) {
+    const queue = new Queue<Vertex>();
+    const startingVertexIndex = this.vertices.indexOf(startingVertex);
+
+    if (startingVertexIndex === -1) {
+      console.log("Vertex not found.");
+      return;
+    }
+
+    queue.enqueue(startingVertex);
+    startingVertex.visited = true;
+
+    while (!queue.isEmpty()) {
+      const currentVertex = queue.dequeue();
+      console.log(`Visited ${currentVertex?.label}.`);
+
+      if (currentVertex?.label === targetLabel) {
+        console.log(`Found ${currentVertex?.label}.`);
+        return;
+      }
+
+      const currentVertexIndex = this.vertices.indexOf(currentVertex!);
+
+      for (let adjacentVertex of this.adjacent[currentVertexIndex]) {
+        if (!adjacentVertex.visited) {
+          queue.enqueue(adjacentVertex);
+          adjacentVertex.visited = true;
+        }
+      }
+    }
+
+    console.log(`Vertex ${targetLabel} not found.`);
+  }
+}
